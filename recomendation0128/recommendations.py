@@ -23,7 +23,7 @@ import sys
 from math import sqrt
 from collections import defaultdict
 
-#ちょってセンスないけど著者名をリスト化
+#ちょっとセンスないけど著者名をリスト化
 authors = ["石川 三四郎", "ドイル アーサー・コナン", "木下 尚江", "辻 潤", "牧野 富太郎", "狩野 直喜", "西田 幾多郎", "徳冨 蘆花", "モーパッサン ギ・ド", "島木 健作", "上司 小剣", "下村 千秋", "矢田 津世子", "与謝野 寛", "江見 水蔭"]
 
 #url2authorファイル読み込み、リストで返す
@@ -49,6 +49,7 @@ def read_wordnfreq(file_name_list):
       word2freq[word] += int(freq)
 #    print word + "\t" + freq
 
+#リストをprint
 def print_list(list_name):
   for line in list_name:
     print line
@@ -57,13 +58,22 @@ def print_list(list_name):
 url2author_list = read_list_url2author("url2author.test.dic")
 list_title = ret_filename_url2author(url2author_list, "島木 健作")
 
-for authors_name in authors:
-  print authors_name
-  print ret_filename_url2author(url2author_list, authors_name)
+#著者名と著者に対応したファイル名を表示
+#for authors_name in authors:
+#  print authors_name
+#  print_list(ret_filename_url2author(url2author_list, authors_name))
 
+#お試しで「島木 健作」のリストを作成
+shimaki_word_list = list()
+#単語の頻度をカウントする辞書作成
 word2freq = defaultdict(int)
 read_wordnfreq(list_title)
 
+for key, value in sorted(word2freq.items(), key = lambda x:x[1], reverse = True):
+  shimaki_word_list.append([key,value])
+
+for key, value in shimaki_word_list:
+  print "%s\t%d" %(key,int(value))
 
 # Returns a distance-based similarity score for person1 and person2
 def sim_distance(prefs,person1,person2):
