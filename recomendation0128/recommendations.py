@@ -43,37 +43,48 @@ def ret_filename_url2author(url2author_list,author_name):
 
 #辞書型で単語をキーとして頻度を足していく
 def read_wordnfreq(file_name_list):
+  word2freq = defaultdict(int)
   for file_name in file_name_list:
     for line in open("./test/"+file_name, 'r'):
       word, parse, parse_detail, freq = line.strip().split('\t')
       word2freq[word] += int(freq)
+  return word2freq
 #    print word + "\t" + freq
 
 #リストをprint
 def print_list(list_name):
   for line in list_name:
     print line
-#メイン処理
 
+#頻度順に辞書を並び替え
+def list_sorted_authorfreq():
+  authors_word_list = list()
+  for key, value in sorted(word2freq.items(), key = lambda x:x[1], reverse = True):
+    authors_word_list.append([key,value])
+
+#メイン処理
 url2author_list = read_list_url2author("url2author.test.dic")
-list_title = ret_filename_url2author(url2author_list, "島木 健作")
+def list_author(authors_name):
+  list_title = ret_filename_url2author(url2author_list, authors_name)
+  return list_title
 
 #著者名と著者に対応したファイル名を表示
 #for authors_name in authors:
 #  print authors_name
 #  print_list(ret_filename_url2author(url2author_list, authors_name))
 
-#お試しで「島木 健作」のリストを作成
-shimaki_word_list = list()
-#単語の頻度をカウントする辞書作成
-word2freq = defaultdict(int)
-read_wordnfreq(list_title)
 
-for key, value in sorted(word2freq.items(), key = lambda x:x[1], reverse = True):
-  shimaki_word_list.append([key,value])
+for authors_name in authors:
+  freq_list = list()
+  print "%s\n%s\n" %(authors_name,list_author(authors_name))
+  freq_list.append([authors_name, read_wordnfreq(list_author(authors_name))])
+  
+#  for k,v in freq_list:
+#    for key,val in v.items():
+#      print "%s\t%d" %(key,val)
 
-for key, value in shimaki_word_list:
-  print "%s\t%d" %(key,int(value))
+
+
 
 # Returns a distance-based similarity score for person1 and person2
 def sim_distance(prefs,person1,person2):
